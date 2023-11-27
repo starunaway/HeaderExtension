@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { BaseStorage } from '@src/shared/storages/base';
+import { BaseStorage } from '@/shared/storages/base';
 
 type WrappedPromise = ReturnType<typeof wrapPromise>;
 const storageMap: Map<BaseStorage<unknown>, WrappedPromise> = new Map();
@@ -10,7 +10,6 @@ export default function useStorage<
 >(storage: Storage) {
   const _data = useSyncExternalStore<Data | null>(storage.subscribe, storage.getSnapshot);
 
-  console.log('useStorage', _data);
   if (!storageMap.has(storage)) {
     storageMap.set(storage, wrapPromise(storage.get()));
   }

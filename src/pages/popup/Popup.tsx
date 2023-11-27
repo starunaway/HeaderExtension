@@ -1,8 +1,8 @@
 import React from 'react';
-import useStorage from '@src/shared/hooks/useStorage';
-import withSuspense from '@src/shared/hoc/withSuspense';
-import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import ruleStorage from '@src/shared/storages/ruleStorage';
+import useStorage from '@/shared/hooks/useStorage';
+import withSuspense from '@/shared/hoc/withSuspense';
+import withErrorBoundary from '@/shared/hoc/withErrorBoundary';
+import ruleStorage from '@/shared/storages/ruleStorage';
 
 import { Left, RuleContainer } from './components';
 

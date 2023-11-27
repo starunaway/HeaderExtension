@@ -1,4 +1,4 @@
-import { BaseStorage, createStorage, StorageType } from '@src/shared/storages/base';
+import { BaseStorage, createStorage, StorageType } from '@/shared/storages/base';
 import { v4 as uuid } from 'uuid';
 
 export enum Method {
@@ -16,7 +16,7 @@ export enum Method {
 
 export interface Rule {
   name: string;
-  ruleId: string;
+  id: string;
   /**
    * 请求头
    */
@@ -109,23 +109,27 @@ export type RuleKey = keyof Rule;
 
 type RuleState = {
   enabled: boolean;
+  activeRuleId: string;
   rules: Rule[];
 };
 
 export type RuleStorage = BaseStorage<RuleState> & {
   toggle: () => void;
+  setActiveRuleId: (ruleId: string) => void;
   insertRule: (rule: Rule) => void;
   deleteRule: (ruleId: string) => void;
   updateRule: (ruleId: string, ruleKey: RuleKey, value: Rule[RuleKey]) => void;
 };
 
+const initialRuleId = uuid();
 const storage = createStorage<RuleState>(
   'rules',
   {
     enabled: false,
+    activeRuleId: initialRuleId,
     rules: [
       {
-        ruleId: uuid(),
+        id: initialRuleId,
         name: '规则 1',
         requestHeaders: [
           {
@@ -158,7 +162,7 @@ const ruleStorage: RuleStorage = {
       return {
         ...state,
         rules: state.rules.map(rule => {
-          if (rule.ruleId === ruleId) {
+          if (rule.id === ruleId) {
             return {
               ...rule,
               [ruleKey]: value,
@@ -183,7 +187,15 @@ const ruleStorage: RuleStorage = {
     storage.set(state => {
       return {
         ...state,
-        rules: state.rules.filter(rule => rule.ruleId !== ruleId),
+        rules: state.rules.filter(rule => rule.id !== ruleId),
+      };
+    });
+  },
+  setActiveRuleId: (ruleId: string) => {
+    storage.set(state => {
+      return {
+        ...state,
+        activeRuleId: ruleId,
       };
     });
   },

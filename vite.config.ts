@@ -24,10 +24,7 @@ const cacheInvalidationKeyRef = { current: generateKey() };
 export default defineConfig({
   resolve: {
     alias: {
-      '@root': rootDir,
-      '@src': srcDir,
-      '@assets': assetsDir,
-      '@pages': pagesDir,
+      '@': srcDir,
     },
   },
   plugins: [

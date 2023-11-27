@@ -1,15 +1,18 @@
-import useStorage from '@root/src/shared/hooks/useStorage';
-import ruleStorage from '@root/src/shared/storages/ruleStorage';
-import RuleItem from './RuleItem';
+import useStorage from '@/shared/hooks/useStorage';
+import ruleStorage from '@/shared/storages/ruleStorage';
+import RuleHeader, { ActiveTab } from './RuleHeader';
+import { useState } from 'react';
 
 const RuleContainer = () => {
-  const { rules } = useStorage(ruleStorage);
+  const { rules, activeRuleId } = useStorage(ruleStorage);
+
+  const [activeTab, setActiveTab] = useState<ActiveTab>('rule');
+
+  const activeRule = rules.find(rule => rule.id === activeRuleId);
 
   return (
-    <div className="flex-1">
-      {rules.map(rule => (
-        <RuleItem rule={rule}></RuleItem>
-      ))}
+    <div className="flex-1 p-12">
+      <RuleHeader rule={activeRule} activeTab={activeTab} onTabChange={setActiveTab}></RuleHeader>
     </div>
   );
 };

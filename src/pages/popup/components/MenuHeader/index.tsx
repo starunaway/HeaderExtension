@@ -1,6 +1,6 @@
-import useStorage from '@root/src/shared/hooks/useStorage';
+import useStorage from '@/shared/hooks/useStorage';
 import ToggleBtn from '../ToggleBtn';
-import ruleStorage from '@root/src/shared/storages/ruleStorage';
+import ruleStorage from '@/shared/storages/ruleStorage';
 
 const MenuHeader = () => {
   const { rules } = useStorage(ruleStorage);
