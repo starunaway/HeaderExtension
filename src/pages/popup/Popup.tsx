@@ -18,7 +18,7 @@ const Popup = () => {
       <header className="App-header" style={{ color: theme === 'light' ? '#000' : '#fff' }}>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/pages/popup/Popup.tsx</code> and save to reload.
+          Edit <code>src/111DSGDSG/popup/Popup.tsx</code> and save to reload.
         </p>
         <a
           className="App-link"
@@ -33,7 +33,16 @@ const Popup = () => {
             backgroundColor: theme === 'light' ? '#fff' : '#000',
             color: theme === 'light' ? '#000' : '#fff',
           }}
-          onClick={exampleThemeStorage.toggle}>
+          onClick={() => {
+            exampleThemeStorage.toggle();
+            chrome.runtime.sendMessage({
+              action: 'setHeader',
+              data: {
+                headerName: 'x-env',
+                headerValue: 't13es1213t',
+              },
+            });
+          }}>
           Toggle theme
         </button>
       </header>
