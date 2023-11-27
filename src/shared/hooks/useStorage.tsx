@@ -10,6 +10,7 @@ export default function useStorage<
 >(storage: Storage) {
   const _data = useSyncExternalStore<Data | null>(storage.subscribe, storage.getSnapshot);
 
+  console.log('useStorage', _data);
   if (!storageMap.has(storage)) {
     storageMap.set(storage, wrapPromise(storage.get()));
   }
