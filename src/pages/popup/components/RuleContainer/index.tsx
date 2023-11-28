@@ -1,7 +1,9 @@
 import useStorage from '@/shared/hooks/useStorage';
-import ruleStorage from '@/shared/storages/ruleStorage';
+import ruleStorage, { Rule, RuleKey, RuleValueKey } from '@/shared/storages/ruleStorage';
 import RuleHeader, { ActiveTab } from './RuleHeader';
 import { useState } from 'react';
+import { getRuleByKey, getSettedFilters, getSettedRules } from '@/utils';
+import RuleContent from './RuleContent';
 
 const RuleContainer = () => {
   const { rules, activeRuleId } = useStorage(ruleStorage);
@@ -10,9 +12,32 @@ const RuleContainer = () => {
 
   const activeRule = rules.find(rule => rule.id === activeRuleId);
 
+  console.log(activeRule);
+
+  const settedRules = getSettedRules(activeRule);
+  const settedFilters = getSettedFilters(activeRule);
+
+  console.log(settedRules, settedFilters);
+
+  const renderRules = activeTab === 'rule' ? settedRules : settedFilters;
+
   return (
     <div className="flex-1 p-12">
       <RuleHeader rule={activeRule} activeTab={activeTab} onTabChange={setActiveTab}></RuleHeader>
+      <div className="mt-12">
+        {renderRules.map(ruleKey => {
+          const ruleInfo = getRuleByKey(ruleKey);
+          const ruleSetting = activeRule[ruleKey] as Rule[RuleValueKey];
+          const rule = {
+            ...ruleInfo,
+            rules: ruleSetting,
+            showComment: activeRule.showComment,
+            id: activeRule.id,
+          };
+          console.log(rule);
+          return <RuleContent ruleInfo={rule}></RuleContent>;
+        })}
+      </div>
     </div>
   );
 };

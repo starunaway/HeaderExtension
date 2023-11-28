@@ -61,3 +61,8 @@ export const FilterMenus: IMenu[] = [
     show: false,
   },
 ];
+
+export const RuleKeys = RuleMenus.map(m => m.value);
+export const FilterKeys = FilterMenus.map(m => m.value);
+
+export const Menus = [...RuleMenus, ...FilterMenus];

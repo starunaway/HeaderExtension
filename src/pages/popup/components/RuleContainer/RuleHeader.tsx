@@ -36,11 +36,12 @@ const RuleHeader = (props: Props) => {
 
   const handleCreateRule = (menu: RuleKey) => {
     // todo add rule
+    onTabChange('rule');
   };
 
   return (
     <div className="flex justify-between">
-      <ButtonGroup size="sm" isAttached>
+      <ButtonGroup isAttached>
         <Button onClick={() => onTabChange('rule')} colorScheme={activeTab === 'rule' ? 'teal' : 'gray'}>
           Rule
         </Button>
@@ -64,7 +65,7 @@ const RuleHeader = (props: Props) => {
             })}
           </MenuList>
         </Menu>
-        {Boolean(filterMenus.length) && (
+        {!!filterMenus.length && (
           <Menu isLazy>
             <MenuButton ml={2} as={Button} leftIcon={<AddIcon />}>
               Filter
@@ -77,46 +78,6 @@ const RuleHeader = (props: Props) => {
           </Menu>
         )}
       </div>
-
-      {/* <Tabs isFitted variant="enclosed" onChange={handleTabsChange} index={activeTab === 'rule' ? 0 : 1}>
-        <TabList mb="1em">
-          <Tab>Rule</Tab>
-          <Tab>Filter</Tab>
-        </TabList>
-      </Tabs> */}
-
-      {/* <TabPanels>
-        <TabPanel>
-          <div className="flex justify-between">
-            <Menu>
-              <MenuButton as={Button} leftIcon={<AddIcon />} rightIcon={<FiPlusCircle />}>
-                创建 Rule
-              </MenuButton>
-              <MenuList>
-                List of rule attributes excluding Filter, name, and ruleId 
-                <MenuItem onClick={() => handleAddAttribute('requestHeaders')}>Request Headers</MenuItem>
-                 ... other menu items 
-              </MenuList>
-            </Menu>
-            <Button leftIcon={<FiFilter />}>创建 Filter</Button>
-          </div>
-        </TabPanel>
-        <TabPanel>
-          <div className="flex justify-between">
-            <Button leftIcon={<FiPlusCircle />}>创建 Rule</Button>
-            <Menu>
-              <MenuButton as={Button} leftIcon={<AddIcon />} rightIcon={<FiFilter />}>
-                创建 Filter
-              </MenuButton>
-              <MenuList>
-               List of filter attributes
-                <MenuItem onClick={() => handleAddAttribute('tabFilters')}>Tab Filters</MenuItem>
-                ... other menu items 
-              </MenuList>
-            </Menu>
-          </div>
-        </TabPanel>
-      </TabPanels> */}
     </div>
   );
 };

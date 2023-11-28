@@ -17,6 +17,8 @@ export enum Method {
 export interface Rule {
   name: string;
   id: string;
+  enabled?: boolean;
+  showComment?: boolean;
   /**
    * 请求头
    */
@@ -24,6 +26,7 @@ export interface Rule {
     name?: string;
     value?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -33,6 +36,7 @@ export interface Rule {
     name?: string;
     value?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -43,6 +47,7 @@ export interface Rule {
     origin?: string;
     target?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -52,6 +57,7 @@ export interface Rule {
     directive?: string;
     value?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -61,6 +67,7 @@ export interface Rule {
     name?: string;
     value?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -70,6 +77,7 @@ export interface Rule {
     name?: string;
     value?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   // ---------以下是 Filters ------------
@@ -78,7 +86,10 @@ export interface Rule {
   /**
    * 在哪些 tab 页上生效，关闭tab 页后，自动失效
    */
-  tabFilters?: {}[];
+  tabFilters?: {
+    comments?: string;
+    enabled?: boolean;
+  }[];
   /**
    * 在哪些 url 上生效
    */
@@ -86,6 +97,7 @@ export interface Rule {
     url?: string;
     methods: Method[];
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -94,6 +106,7 @@ export interface Rule {
   domainFilters?: {
     domain?: string;
     comments?: string;
+    enabled?: boolean;
   }[];
 
   /**
@@ -102,10 +115,12 @@ export interface Rule {
   timeFilters?: {
     time?: number;
     comments?: string;
+    enabled?: boolean;
   }[];
 }
 
 export type RuleKey = keyof Rule;
+export type RuleValueKey = Exclude<RuleKey, 'name' | 'id' | 'enabled' | 'showComment'>;
 
 type RuleState = {
   enabled: boolean;
