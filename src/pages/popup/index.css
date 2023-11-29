@@ -19,3 +19,22 @@ body {
   width: 100%;
   height: 100%;
 }
+
+.iconBtn {
+  cursor: pointer;
+}
+.iconBtn:hover {
+  color: cadetblue;
+}
+
+.chakra-input.ruleInput {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0;
+}
+
+.chakra-input.ruleInput:focus-visible {
+  border: none;
+  border-bottom: 1px solid;
+  box-shadow: none;
+}

@@ -1,8 +1,8 @@
-import { RuleKey } from '../shared/storages/ruleStorage';
+import { RuleValueKey } from '../shared/storages/ruleStorage';
 
 export type IMenu = {
   name: string;
-  value: RuleKey;
+  value: RuleValueKey;
   show: boolean;
 };
 
@@ -66,3 +66,49 @@ export const RuleKeys = RuleMenus.map(m => m.value);
 export const FilterKeys = FilterMenus.map(m => m.value);
 
 export const Menus = [...RuleMenus, ...FilterMenus];
+
+export const RuleFieldMap = {
+  requestHeaders: {
+    fieldName: 'name',
+    fieldValue: 'value',
+  },
+  responseHeaders: {
+    fieldName: 'name',
+    fieldValue: 'value',
+  },
+  redirectUrl: {
+    fieldName: 'origin',
+    fieldValue: 'target',
+  },
+  cspHeaders: {
+    fieldName: 'directive',
+    fieldValue: 'value',
+  },
+  cookies: {
+    fieldName: 'name',
+    fieldValue: 'value',
+  },
+  setCookies: {
+    fieldName: 'name',
+    fieldValue: 'value',
+  },
+  // fixme 暂时未实现
+  tabFilters: {
+    fieldName: 'name',
+    fieldValue: 'value',
+  },
+  reqUrlFilters: {
+    fieldName: 'url',
+    fieldValue: 'methods',
+  },
+  domainFilters: {
+    fieldName: 'domain',
+    // fix ts
+    fieldValue: '',
+  },
+  timeFilters: {
+    fieldName: 'time',
+    // fix ts
+    fieldValue: '',
+  },
+};

@@ -1,21 +1,6 @@
-import React, { useState } from 'react';
-import {
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  ButtonGroup,
-  IconButton,
-} from '@chakra-ui/react';
+import { Button, Menu, MenuButton, MenuList, MenuItem, ButtonGroup } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-import { FiFilter, FiPlusCircle } from 'react-icons/fi';
-import { Rule, RuleKey } from '@/shared/storages/ruleStorage';
+import ruleStorage, { Rule, RuleKey, RuleValueKey } from '@/shared/storages/ruleStorage';
 import { getVisibleMenu } from '@/utils';
 import { FilterMenus, RuleMenus } from '@/constants';
 
@@ -34,9 +19,18 @@ const RuleHeader = (props: Props) => {
 
   const filterMenus = getVisibleMenu(FilterMenus);
 
-  const handleCreateRule = (menu: RuleKey) => {
+  const handleCreateRule = (ruleKey: RuleValueKey) => {
     // todo add rule
     onTabChange('rule');
+
+    const newValue = rule[ruleKey] || [];
+
+    ruleStorage.updateRule(rule.id, ruleKey, [
+      ...newValue,
+      {
+        enabled: true,
+      },
+    ]);
   };
 
   return (

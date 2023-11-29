@@ -33,8 +33,9 @@ const RuleContainer = () => {
             rules: ruleSetting,
             showComment: activeRule.showComment,
             id: activeRule.id,
+            enabled: activeRule.enabled,
           };
-          console.log(rule);
+          console.log('xx1111', rule);
           return <RuleContent ruleInfo={rule}></RuleContent>;
         })}
       </div>

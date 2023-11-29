@@ -140,11 +140,12 @@ const initialRuleId = uuid();
 const storage = createStorage<RuleState>(
   'rules',
   {
-    enabled: false,
+    enabled: true,
     activeRuleId: initialRuleId,
     rules: [
       {
         id: initialRuleId,
+        enabled: true,
         name: '规则 1',
         requestHeaders: [
           {
@@ -164,7 +165,6 @@ const ruleStorage: RuleStorage = {
   ...storage,
 
   toggle: () => {
-    console.log('SDsd');
     storage.set(state => {
       return {
         ...state,

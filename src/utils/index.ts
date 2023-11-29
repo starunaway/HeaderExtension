@@ -1,5 +1,5 @@
 import { FilterKeys, IMenu, RuleKeys, Menus } from '@/constants';
-import { Rule, RuleKey } from '@/shared/storages/ruleStorage';
+import { Rule, RuleKey, RuleValueKey } from '@/shared/storages/ruleStorage';
 
 export const getVisibleMenu = (menus: IMenu[]) => {
   return menus.filter(menu => menu.show);
@@ -17,8 +17,10 @@ export const getSettedFilters = (rule: Rule) => {
   });
 };
 
-export const getRuleByKey = (key: RuleKey) => {
+export const getRuleByKey = (key: RuleValueKey) => {
   return Menus.find(menu => {
     return menu.value === key;
   });
 };
+
+export const genEmptyRule = (key: RuleValueKey) => {};
