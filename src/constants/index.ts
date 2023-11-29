@@ -8,17 +8,17 @@ export type IMenu = {
 
 export const RuleMenus: IMenu[] = [
   {
-    name: '请求头',
+    name: 'Request Header',
     value: 'requestHeaders',
     show: true,
   },
   {
-    name: '响应头',
+    name: 'Response Header',
     value: 'responseHeaders',
     show: false,
   },
   {
-    name: '重定向',
+    name: 'Redirect Url',
     value: 'redirectUrl',
     show: false,
   },

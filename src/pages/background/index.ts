@@ -37,11 +37,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 });
 
 console.log('background loaded');
-chrome.storage.local.clear(function () {
-  var error = chrome.runtime.lastError;
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('Storage cleared successfully.');
-  }
-});
+// chrome.storage.local.clear(function () {
+//   var error = chrome.runtime.lastError;
+//   if (error) {
+//     console.error(error);
+//   } else {
+//     console.log('Storage cleared successfully.');
+//   }
+// });

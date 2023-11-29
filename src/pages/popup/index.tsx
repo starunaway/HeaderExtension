@@ -21,6 +21,9 @@ const theme = extendTheme({
     Menu: {
       defaultProps,
     },
+    MenuButton: {
+      defaultProps,
+    },
     Input: {
       defaultProps,
     },

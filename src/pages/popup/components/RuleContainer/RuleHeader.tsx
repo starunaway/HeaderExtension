@@ -44,9 +44,9 @@ const RuleHeader = (props: Props) => {
         </Button>
       </ButtonGroup>
 
-      <div>
+      <div className="flex items-center">
         <Menu isLazy>
-          <MenuButton as={Button} leftIcon={<AddIcon />}>
+          <MenuButton as={Button} leftIcon={<AddIcon boxSize={3} />} iconSpacing={0} boxSize={6} w={16} px={2}>
             Rule
           </MenuButton>
           <MenuList>
@@ -61,7 +61,7 @@ const RuleHeader = (props: Props) => {
         </Menu>
         {!!filterMenus.length && (
           <Menu isLazy>
-            <MenuButton ml={2} as={Button} leftIcon={<AddIcon />}>
+            <MenuButton ml={2} as={Button} leftIcon={<AddIcon boxSize={3} />} iconSpacing={0} boxSize={6} w={16} px={2}>
               Filter
             </MenuButton>
             <MenuList>

@@ -57,7 +57,7 @@ const RuleContentHeader = (props: HeaderProps) => {
     <div className="flex  items-center mb-8 justify-between">
       <div className="flex items-center">
         <Switch isChecked={enabled} mr={2} onChange={handleRuleGrpupEnable}></Switch>
-        <h4 className="text-16">{name}</h4>
+        <h4 className="text-16 mr-4">{name}</h4>
 
         {show ? (
           <TriangleDownIcon boxSize={3.5} className="iconBtn" onClick={() => onShowChange(!show)} />

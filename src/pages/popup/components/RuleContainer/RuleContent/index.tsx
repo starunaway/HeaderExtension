@@ -1,10 +1,11 @@
 import { Input, Switch, Tooltip } from '@chakra-ui/react';
-import { IMenu, RuleFieldMap } from '@/constants';
+import { RuleFieldMap } from '@/constants';
 import RuleContentHeader, { IBaseRuleProps } from './RuleContentHeader';
 import { useState } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, CopyIcon, DeleteIcon } from '@chakra-ui/icons';
 import ruleStorage from '@/shared/storages/ruleStorage';
 import RuleValue from './RuleValue';
+import classnames from 'classnames';
 
 const RuleContent = (props: IBaseRuleProps) => {
   const {
@@ -22,7 +23,36 @@ const RuleContent = (props: IBaseRuleProps) => {
       }
       return r;
     });
-    console.log('newRules', newRules);
+    ruleStorage.updateRule(id, ruleKey, newRules);
+  };
+
+  const handleMoveUp = index => {
+    if (index === 0) {
+      return;
+    }
+    const newRules = [...rules];
+    newRules.splice(index - 1, 0, newRules.splice(index, 1)[0]);
+    ruleStorage.updateRule(id, ruleKey, newRules);
+  };
+
+  const handleMoveDown = index => {
+    if (index === rules.length - 1) {
+      return;
+    }
+    const newRules = [...rules];
+    newRules.splice(index + 1, 0, newRules.splice(index, 1)[0]);
+    ruleStorage.updateRule(id, ruleKey, newRules);
+  };
+
+  const handleDeleteRuleItem = index => {
+    const newRules = [...rules];
+    newRules.splice(index, 1);
+    ruleStorage.updateRule(id, ruleKey, newRules);
+  };
+
+  const handleCopyRuleItem = index => {
+    const newRules = [...rules];
+    newRules.splice(index + 1, 0, { ...newRules[index] });
     ruleStorage.updateRule(id, ruleKey, newRules);
   };
 
@@ -49,16 +79,26 @@ const RuleContent = (props: IBaseRuleProps) => {
               {showComment && <Input className="ruleInput" placeholder="comment"></Input>}
 
               <Tooltip label="Move Up">
-                <ArrowUpIcon className="iconBtn" boxSize={3} mr={0.5} />
+                <ArrowUpIcon
+                  className={classnames('iconBtn', { disabled: index === 0 })}
+                  boxSize={3}
+                  mr={0.5}
+                  onClick={() => handleMoveUp(index)}
+                />
               </Tooltip>
               <Tooltip label="Move Down">
-                <ArrowDownIcon className="iconBtn" boxSize={3} mr={0.5} />
+                <ArrowDownIcon
+                  className={classnames('iconBtn', { disabled: index === rules.length - 1 })}
+                  boxSize={3}
+                  mr={0.5}
+                  onClick={() => handleMoveDown(index)}
+                />
               </Tooltip>
               <Tooltip label="Duplicate Rule">
-                <CopyIcon className="iconBtn" boxSize={3} mr={0.5} />
+                <CopyIcon className="iconBtn" boxSize={3} mr={0.5} onClick={() => handleCopyRuleItem(index)} />
               </Tooltip>
               <Tooltip label="Delete Rule">
-                <DeleteIcon className="iconBtn" boxSize={3} />
+                <DeleteIcon className="iconBtn" boxSize={3} onClick={() => handleDeleteRuleItem(index)} />
               </Tooltip>
             </div>
           );
