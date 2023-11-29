@@ -3,10 +3,12 @@ import 'webextension-polyfill';
 
 reloadOnUpdate('pages/background');
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log(message);
   if (message.action === 'setHeader') {
     const { headerName, headerValue } = message.data;
+    const res = await chrome.declarativeNetRequest.getDynamicRules();
+
     chrome.declarativeNetRequest.updateDynamicRules({
       removeRuleIds: [1],
       addRules: [

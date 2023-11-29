@@ -20,7 +20,7 @@ interface HeaderProps extends IBaseRuleProps {
 
 const RuleContentHeader = (props: HeaderProps) => {
   const {
-    ruleInfo: { id, rules, value, showComment, name, enabled },
+    ruleInfo: { id, rules, value: ruleKey, showComment, name, enabled },
     show,
     onShowChange,
   } = props;
@@ -29,7 +29,7 @@ const RuleContentHeader = (props: HeaderProps) => {
     const newRuleValue = rules.map(r => ({ ...r, enabled: !enabled }));
 
     // 每个子项都要更新状态
-    ruleStorage.updateRule(id, value, newRuleValue);
+    ruleStorage.updateRule(id, ruleKey, newRuleValue);
     // Group 整体更新状态
     ruleStorage.updateRule(id, 'enabled', !enabled);
   };
@@ -37,7 +37,7 @@ const RuleContentHeader = (props: HeaderProps) => {
   const handleAddRuleToGroup = () => {
     const newValue = rules || [];
 
-    ruleStorage.updateRule(id, value, [
+    ruleStorage.updateRule(id, ruleKey, [
       ...newValue,
       {
         enabled: true,
@@ -46,7 +46,7 @@ const RuleContentHeader = (props: HeaderProps) => {
   };
 
   const handleDeleteRuleGroup = () => {
-    ruleStorage.updateRule(id, value, undefined);
+    ruleStorage.updateRule(id, ruleKey, undefined);
   };
 
   const handleShowComment = () => {
