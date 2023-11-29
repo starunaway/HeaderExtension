@@ -1,6 +1,6 @@
 import { BaseStorage, createStorage, StorageType } from '@/shared/storages/base';
 import { v4 as uuid } from 'uuid';
-
+import { debounce } from 'lodash-es';
 export enum Method {
   GET = 'GET',
   POST = 'POST',
@@ -215,5 +215,15 @@ const ruleStorage: RuleStorage = {
     });
   },
 };
+
+const updateRule = () => {
+  const ruleSnapshot = ruleStorage.getSnapshot();
+  chrome.runtime.sendMessage({
+    action: 'setHeader',
+    data: ruleSnapshot,
+  });
+};
+
+ruleStorage.subscribe(debounce(updateRule, 100));
 
 export default ruleStorage;

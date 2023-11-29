@@ -12,12 +12,8 @@ const RuleContainer = () => {
 
   const activeRule = rules.find(rule => rule.id === activeRuleId);
 
-  console.log(activeRule);
-
   const settedRules = getSettedRules(activeRule);
   const settedFilters = getSettedFilters(activeRule);
-
-  console.log(settedRules, settedFilters);
 
   const renderRules = activeTab === 'rule' ? settedRules : settedFilters;
 
@@ -35,7 +31,6 @@ const RuleContainer = () => {
             id: activeRule.id,
             enabled: activeRule.enabled,
           };
-          console.log('xx1111', rule);
           return <RuleContent ruleInfo={rule}></RuleContent>;
         })}
       </div>

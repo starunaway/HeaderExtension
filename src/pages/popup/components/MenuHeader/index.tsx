@@ -5,7 +5,6 @@ import ruleStorage from '@/shared/storages/ruleStorage';
 const MenuHeader = () => {
   const { rules } = useStorage(ruleStorage);
 
-  console.log(rules);
   return (
     <div className="h-48 flex">
       <div className="flex-1">
