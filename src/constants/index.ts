@@ -80,3 +80,5 @@ export const RuleFieldMap = {
   domainFilters: ['domain'],
   timeFilters: ['time'],
 };
+
+export const MenuKeys = Menus.map(m => m.value);

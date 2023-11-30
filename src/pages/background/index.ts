@@ -1,39 +1,104 @@
-import ruleStorage from '@/shared/storages/ruleStorage';
+import { Menus, RuleFieldMap } from '@/constants';
+import { Rule } from '@/shared/storages/ruleStorage';
+import { genRuleId } from '@/utils';
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
 import 'webextension-polyfill';
 
 reloadOnUpdate('pages/background');
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  console.log(message);
   if (message.action === 'setHeader') {
-    const { activeRuleId, enabled } = message.data;
-    const res = await chrome.declarativeNetRequest.getDynamicRules();
+    const { activeRuleId, enabled, activeRule } = message.data as {
+      activeRuleId: number;
+      enabled: boolean;
+      activeRule: Rule;
+    };
+    // const DynamicRules = await chrome.declarativeNetRequest.getDynamicRules();
+    // const EnabledRulesets = await chrome.declarativeNetRequest.getEnabledRulesets();
+    // const MatchedRules = await chrome.declarativeNetRequest.getMatchedRules({});
+    // const SessionRules = await chrome.declarativeNetRequest.getSessionRules();
 
-    chrome.declarativeNetRequest.updateDynamicRules({
-      // removeRuleIds: [1],
-      // addRules: [
-      //   {
-      //     id: 1,
-      //     priority: 1,
-      //     action: {
-      //       type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-      //       requestHeaders: [
-      //         {
-      //           header: headerName,
-      //           operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-      //           value: headerValue,
-      //         },
-      //       ],
-      //     },
-      //     condition: {
-      //       // todo 生效条件
-      //       // urlFilter: '|http*://*/*',
-      //       // resourceTypes: ['main_frame'],
-      //     },
-      //   },
-      // ],
-    });
+    console.log(activeRuleId, enabled, activeRule);
+    // console.log(DynamicRules, EnabledRulesets, MatchedRules, SessionRules);
+
+    // 禁用该规则
+    if (enabled === false) {
+      chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: [activeRuleId],
+      });
+      // 没有已启用的规则，不需要操作
+      // if (EnabledRulesets.length === 0) {
+      //   return;
+      // } else {
+      //   //  需要根据每个子项创建规则
+      //   // 不需要，可以通用
+      //   // const ruleIds = Menus.reduce((result, m) => {
+      //   //   if (activeRule[m.value]) {
+      //   //     const ruleId = genRuleId(activeRuleId, m.value);
+      //   //     result.push(ruleId);
+      //   //   }
+      //   //   return result;
+      //   // }, [] as number[]);
+
+      //   chrome.declarativeNetRequest.updateDynamicRules({
+      //     removeRuleIds: [activeRuleId],
+      //   });
+      // }
+    } else {
+      // 启用该规则
+      // todo 要把之前的规则移出，这里判断了值是否存在才计算 id，可能会遗漏
+      // 需要根据每个子项创建规则
+      const action = Menus.reduce(
+        (result, menu) => {
+          const ruleItem = activeRule[menu.value];
+
+          if (ruleItem && ruleItem.length) {
+            const fileds = RuleFieldMap[menu.value];
+            console.log(ruleItem, menu.value, fileds);
+            if (menu.value === 'requestHeaders') {
+              result.requestHeaders = result.requestHeaders || [];
+
+              (ruleItem as Rule['requestHeaders']).forEach(item => {
+                if (item.enabled && fileds.every(field => item[field])) {
+                  console.log(111);
+                  result.requestHeaders.push({
+                    header: item.name,
+                    operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                    value: item.value,
+                  });
+                }
+              });
+            }
+          }
+
+          return result;
+        },
+        {
+          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+        } as chrome.declarativeNetRequest.RuleAction,
+      );
+
+      console.log(action);
+
+      const condition: chrome.declarativeNetRequest.RuleCondition = {};
+
+      if (action.requestHeaders.length) {
+        chrome.declarativeNetRequest.updateDynamicRules({
+          removeRuleIds: [activeRuleId],
+          addRules: [
+            {
+              id: activeRuleId,
+              action,
+              condition,
+            },
+          ],
+        });
+      } else {
+        chrome.declarativeNetRequest.updateDynamicRules({
+          removeRuleIds: [activeRuleId],
+        });
+      }
+    }
   }
 });
 

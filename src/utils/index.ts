@@ -1,4 +1,4 @@
-import { FilterKeys, IMenu, RuleKeys, Menus } from '@/constants';
+import { FilterKeys, IMenu, RuleKeys, Menus, MenuKeys } from '@/constants';
 import { Rule, RuleKey, RuleValueKey } from '@/shared/storages/ruleStorage';
 
 export const getVisibleMenu = (menus: IMenu[]) => {
@@ -24,3 +24,8 @@ export const getRuleByKey = (key: RuleValueKey) => {
 };
 
 export const genEmptyRule = (key: RuleValueKey) => {};
+
+export const genRuleId = (id: number, key: RuleValueKey) => {
+  const curId = MenuKeys.findIndex(m => m === key);
+  return id * 10 + curId;
+};

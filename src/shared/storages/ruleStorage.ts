@@ -1,6 +1,7 @@
 import { BaseStorage, createStorage, StorageType } from '@/shared/storages/base';
 import { v4 as uuid } from 'uuid';
 import { debounce } from 'lodash-es';
+import { others } from '@chakra-ui/react';
 export enum Method {
   GET = 'GET',
   POST = 'POST',
@@ -16,7 +17,7 @@ export enum Method {
 
 export interface Rule {
   name: string;
-  id: string;
+  id: number;
   enabled?: boolean;
   showComment?: boolean;
   /**
@@ -124,19 +125,19 @@ export type RuleValueKey = Exclude<RuleKey, 'name' | 'id' | 'enabled' | 'showCom
 
 type RuleState = {
   enabled: boolean;
-  activeRuleId: string;
+  activeRuleId: number;
   rules: Rule[];
 };
 
 export type RuleStorage = BaseStorage<RuleState> & {
   toggle: () => void;
-  setActiveRuleId: (ruleId: string) => void;
+  setActiveRuleId: (ruleId: number) => void;
   insertRule: (rule: Rule) => void;
-  deleteRule: (ruleId: string) => void;
-  updateRule: (ruleId: string, ruleKey: RuleKey, value: Rule[RuleKey]) => void;
+  deleteRule: (ruleId: number) => void;
+  updateRule: (ruleId: number, ruleKey: RuleKey, value: Rule[RuleKey]) => void;
 };
 
-const initialRuleId = uuid();
+const initialRuleId = 1;
 const storage = createStorage<RuleState>(
   'rules',
   {
@@ -172,7 +173,7 @@ const ruleStorage: RuleStorage = {
       };
     });
   },
-  updateRule: <K extends RuleKey>(ruleId, ruleKey: K, value: Rule[K]) => {
+  updateRule: <K extends RuleKey>(ruleId: number, ruleKey: K, value: Rule[K]) => {
     storage.set(state => {
       return {
         ...state,
@@ -198,7 +199,7 @@ const ruleStorage: RuleStorage = {
     });
   },
 
-  deleteRule: (ruleId: string) => {
+  deleteRule: (ruleId: number) => {
     storage.set(state => {
       return {
         ...state,
@@ -206,7 +207,7 @@ const ruleStorage: RuleStorage = {
       };
     });
   },
-  setActiveRuleId: (ruleId: string) => {
+  setActiveRuleId: (ruleId: number) => {
     storage.set(state => {
       return {
         ...state,
@@ -217,10 +218,15 @@ const ruleStorage: RuleStorage = {
 };
 
 const updateRule = () => {
-  const ruleSnapshot = ruleStorage.getSnapshot();
+  const { activeRuleId, rules, ...others } = ruleStorage.getSnapshot();
+  const activeRule = rules.find(r => r.id === activeRuleId);
   chrome.runtime.sendMessage({
     action: 'setHeader',
-    data: ruleSnapshot,
+    data: {
+      ...others,
+      activeRule,
+      activeRuleId,
+    },
   });
 };
 

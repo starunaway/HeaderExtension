@@ -2,11 +2,10 @@ import ruleStorage, { Rule, RuleValueKey } from '@/shared/storages/ruleStorage';
 import { IMenu } from '@/constants';
 import { Switch, Tooltip } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon, TriangleDownIcon, TriangleUpIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { useMemo } from 'react';
 
 export interface IBaseRuleProps {
   ruleInfo: {
-    id: string;
+    id: number;
     rules: Rule[RuleValueKey];
     showComment?: boolean;
     enabled?: boolean;
