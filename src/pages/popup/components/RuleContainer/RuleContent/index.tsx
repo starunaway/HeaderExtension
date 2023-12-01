@@ -76,8 +76,6 @@ const RuleContent = (props: IBaseRuleProps) => {
                 fields={fileds}
                 showComment={showComment}></RuleValue>
 
-              {showComment && <Input className="ruleInput" placeholder="comment"></Input>}
-
               <Tooltip label="Move Up">
                 <ArrowUpIcon
                   className={classnames('iconBtn', { disabled: index === 0 })}

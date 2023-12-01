@@ -5,12 +5,6 @@ import 'webextension-polyfill';
 
 reloadOnUpdate('pages/background');
 
-let EnabledRulesets = [];
-
-chrome.declarativeNetRequest.getDynamicRules().then(rulesets => {
-  EnabledRulesets = rulesets;
-});
-
 // todo 后续区分是更新 header 还是 Filter
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === 'setHeader') {
@@ -21,9 +15,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       activeRule: Rule;
     };
     console.log(' message.data', message.data);
-
-    const cur = await chrome.declarativeNetRequest.getDynamicRules();
-    console.log('cur rules', cur);
 
     // 禁用该规则
     if (enabled === false) {
@@ -42,10 +33,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           if (ruleItem && ruleItem.length) {
             const fileds = RuleFieldMap[menu.value];
             if (menu.value === 'requestHeaders') {
-              result.requestHeaders = result.requestHeaders || [];
-
               (ruleItem as Rule['requestHeaders']).forEach(item => {
                 if (item.enabled && fileds.every(field => item[field])) {
+                  if (!result.requestHeaders) {
+                    result.requestHeaders = [];
+                  }
                   result.requestHeaders.push({
                     header: item.name,
                     operation: chrome.declarativeNetRequest.HeaderOperation.SET,
@@ -63,11 +55,39 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         } as chrome.declarativeNetRequest.RuleAction,
       );
 
-      console.log(action);
+      const condition = Menus.reduce((result, menu) => {
+        const ruleItem = activeRule[menu.value];
 
-      const condition: chrome.declarativeNetRequest.RuleCondition = {};
+        if (ruleItem && ruleItem.length) {
+          const fileds = RuleFieldMap[menu.value];
+          if (menu.value === 'initiatorDomainsFilters') {
+            (ruleItem as Rule['initiatorDomainsFilters']).forEach(item => {
+              if (item.enabled && fileds.every(field => item[field])) {
+                // todo exclude
+                if (!result.initiatorDomains) {
+                  result.initiatorDomains = [];
+                }
+                result.initiatorDomains.push(item.domain!);
+              }
+            });
+          }
+          if (menu.value === 'requestDomainsFilters') {
+            (ruleItem as Rule['requestDomainsFilters']).forEach(item => {
+              if (item.enabled && fileds.every(field => item[field])) {
+                if (!result.requestDomains) {
+                  result.requestDomains = [];
+                }
+                result.requestDomains.push(item.domain!);
+              }
+            });
+          }
 
-      if (action.requestHeaders.length) {
+          // todo 其他 Filter
+        }
+        return result;
+      }, {} as chrome.declarativeNetRequest.RuleCondition);
+
+      if (action.requestHeaders?.length) {
         chrome.declarativeNetRequest.updateDynamicRules({
           removeRuleIds: Array.from(new Set([activeRuleId, lastActiveRuleId])),
           addRules: [
@@ -88,11 +108,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 });
 
 console.log('background loaded');
-chrome.storage.local.clear(function () {
-  var error = chrome.runtime.lastError;
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('Storage cleared successfully.');
-  }
-});
+// chrome.storage.local.clear(function () {
+//   var error = chrome.runtime.lastError;
+//   if (error) {
+//     console.error(error);
+//   } else {
+//     console.log('Storage cleared successfully.');
+//   }
+// });

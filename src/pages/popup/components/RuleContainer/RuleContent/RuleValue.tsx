@@ -13,7 +13,7 @@ const RuleValue = (props: IProps) => {
   return (
     <>
       {fields.map((field, index) => {
-        if (['name', 'value'].includes(field)) {
+        if (['name', 'value', 'domain'].includes(field)) {
           return (
             <Input
               className="ruleInput"

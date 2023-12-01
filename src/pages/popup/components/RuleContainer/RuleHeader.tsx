@@ -33,6 +33,19 @@ const RuleHeader = (props: Props) => {
     ]);
   };
 
+  const handleCreateFilter = (ruleKey: RuleValueKey) => {
+    onTabChange('filter');
+
+    const newValue = rule[ruleKey] || [];
+
+    ruleStorage.updateRule(rule.id, ruleKey, [
+      ...newValue,
+      {
+        enabled: true,
+      },
+    ]);
+  };
+
   return (
     <div className="flex justify-between">
       <ButtonGroup isAttached>
@@ -66,7 +79,11 @@ const RuleHeader = (props: Props) => {
             </MenuButton>
             <MenuList>
               {filterMenus.map(menu => {
-                return <MenuItem key={menu.value}>{menu.name}</MenuItem>;
+                return (
+                  <MenuItem key={menu.value} onClick={() => handleCreateFilter(menu.value)}>
+                    {menu.name}
+                  </MenuItem>
+                );
               })}
             </MenuList>
           </Menu>

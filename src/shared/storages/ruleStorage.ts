@@ -100,14 +100,22 @@ export interface Rule {
   }[];
 
   /**
-   * 在哪些 domain 上生效
+   * 请求哪些 domain 上生效
    */
-  domainFilters?: {
+  requestDomainsFilters?: {
     domain?: string;
     comments?: string;
     enabled?: boolean;
   }[];
 
+  /**
+   * 哪些 domain 发起请求生效
+   */
+  initiatorDomainsFilters?: {
+    domain?: string;
+    comments?: string;
+    enabled?: boolean;
+  }[];
   /**
    * 在指定时间之前生效
    */

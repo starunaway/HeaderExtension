@@ -51,10 +51,16 @@ export const FilterMenus: IMenu[] = [
     show: false,
   },
   {
-    name: 'Domain Filter',
-    value: 'domainFilters',
-    show: false,
+    name: 'Request Domain',
+    value: 'requestDomainsFilters',
+    show: true,
   },
+  {
+    name: 'Origin Domain',
+    value: 'initiatorDomainsFilters',
+    show: true,
+  },
+
   {
     name: 'Time Filter',
     value: 'timeFilters',
@@ -77,7 +83,8 @@ export const RuleFieldMap = {
   // fixme 暂时未实现
   tabFilters: ['name', 'value'],
   reqUrlFilters: ['url', 'methods'],
-  domainFilters: ['domain'],
+  initiatorDomainsFilters: ['domain'],
+  requestDomainsFilters: ['domain'],
   timeFilters: ['time'],
 };
 
