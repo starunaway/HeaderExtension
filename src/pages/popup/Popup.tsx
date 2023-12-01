@@ -1,17 +1,12 @@
-import React from 'react';
-import useStorage from '@/shared/hooks/useStorage';
 import withSuspense from '@/shared/hoc/withSuspense';
 import withErrorBoundary from '@/shared/hoc/withErrorBoundary';
-import ruleStorage from '@/shared/storages/ruleStorage';
 
-import { Left, RuleContainer } from './components';
+import { MenuHeader, RuleContainer } from './components';
 
 const Popup = () => {
-  const rule = useStorage(ruleStorage);
-
   return (
     <>
-      <Left></Left>
+      <MenuHeader></MenuHeader>
       <RuleContainer></RuleContainer>
     </>
     // <div className="App">

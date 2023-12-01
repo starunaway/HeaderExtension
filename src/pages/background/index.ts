@@ -13,13 +13,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       enabled: boolean;
       activeRule: Rule;
     };
-    // const DynamicRules = await chrome.declarativeNetRequest.getDynamicRules();
-    // const EnabledRulesets = await chrome.declarativeNetRequest.getEnabledRulesets();
-    // const MatchedRules = await chrome.declarativeNetRequest.getMatchedRules({});
-    // const SessionRules = await chrome.declarativeNetRequest.getSessionRules();
-
-    console.log(activeRuleId, enabled, activeRule);
-    // console.log(DynamicRules, EnabledRulesets, MatchedRules, SessionRules);
 
     // 禁用该规则
     if (enabled === false) {
@@ -54,13 +47,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
           if (ruleItem && ruleItem.length) {
             const fileds = RuleFieldMap[menu.value];
-            console.log(ruleItem, menu.value, fileds);
             if (menu.value === 'requestHeaders') {
               result.requestHeaders = result.requestHeaders || [];
 
               (ruleItem as Rule['requestHeaders']).forEach(item => {
                 if (item.enabled && fileds.every(field => item[field])) {
-                  console.log(111);
                   result.requestHeaders.push({
                     header: item.name,
                     operation: chrome.declarativeNetRequest.HeaderOperation.SET,
@@ -77,8 +68,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
         } as chrome.declarativeNetRequest.RuleAction,
       );
-
-      console.log(action);
 
       const condition: chrome.declarativeNetRequest.RuleCondition = {};
 

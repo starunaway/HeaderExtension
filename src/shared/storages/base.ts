@@ -31,7 +31,7 @@ export function createStorage<D>(key: string, fallback: D, config?: { storageTyp
     listeners.forEach(listener => listener());
   };
 
-  const set = async (valueOrUpdate: ValueOrUpdate<D>) => {
+  const set = async (valueOrUpdate: ValueOrUpdate<D>, emit = true) => {
     if (typeof valueOrUpdate === 'function') {
       // eslint-disable-next-line no-prototype-builtins
       if (valueOrUpdate.hasOwnProperty('then')) {
@@ -47,7 +47,9 @@ export function createStorage<D>(key: string, fallback: D, config?: { storageTyp
       cache = valueOrUpdate;
     }
     await chrome.storage[storageType].set({ [key]: cache });
-    _emitChange();
+    if (emit) {
+      _emitChange();
+    }
   };
 
   const subscribe = (listener: () => void) => {
@@ -63,7 +65,7 @@ export function createStorage<D>(key: string, fallback: D, config?: { storageTyp
 
   _getDataFromStorage().then(data => {
     cache = data;
-    _emitChange();
+    // _emitChange();
   });
 
   return {

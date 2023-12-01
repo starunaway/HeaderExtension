@@ -30,6 +30,9 @@ const theme = extendTheme({
     Switch: {
       defaultProps,
     },
+    Select: {
+      defaultProps,
+    },
     IconButton: {
       defaultProps,
     },
