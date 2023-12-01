@@ -6,6 +6,12 @@ import 'webextension-polyfill';
 
 reloadOnUpdate('pages/background');
 
+let EnabledRulesets = [];
+
+chrome.declarativeNetRequest.getEnabledRulesets().then(rulesets => {
+  EnabledRulesets = rulesets;
+});
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === 'setHeader') {
     const { activeRuleId, enabled, activeRule } = message.data as {
@@ -38,6 +44,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       //   });
       // }
     } else {
+      console.log(EnabledRulesets, activeRuleId);
       // 启用该规则
       // todo 要把之前的规则移出，这里判断了值是否存在才计算 id，可能会遗漏
       // 需要根据每个子项创建规则

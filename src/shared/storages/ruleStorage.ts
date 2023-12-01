@@ -1,7 +1,5 @@
 import { BaseStorage, createStorage, StorageType } from '@/shared/storages/base';
-import { v4 as uuid } from 'uuid';
 import { debounce } from 'lodash-es';
-import { others } from '@chakra-ui/react';
 export enum Method {
   GET = 'GET',
   POST = 'POST',
@@ -126,6 +124,7 @@ export type RuleValueKey = Exclude<RuleKey, 'name' | 'id' | 'enabled' | 'showCom
 type RuleState = {
   enabled: boolean;
   activeRuleId: number;
+  lastActiveRuleId: number;
   rules: Rule[];
 };
 
@@ -138,24 +137,25 @@ export type RuleStorage = BaseStorage<RuleState> & {
 };
 
 const initialRuleId = 1;
+
+export const initiatedRule: Rule = {
+  id: initialRuleId,
+  enabled: true,
+  name: `New Rule ${initialRuleId}`,
+  requestHeaders: [
+    {
+      name: '',
+      value: '',
+    },
+  ],
+};
 const storage = createStorage<RuleState>(
   'rules',
   {
     enabled: true,
     activeRuleId: initialRuleId,
-    rules: [
-      {
-        id: initialRuleId,
-        enabled: true,
-        name: '规则 1',
-        requestHeaders: [
-          {
-            name: '',
-            value: '',
-          },
-        ],
-      },
-    ],
+    lastActiveRuleId: initialRuleId,
+    rules: [initiatedRule],
   },
   {
     storageType: StorageType.Local,
@@ -187,31 +187,55 @@ const ruleStorage: RuleStorage = {
           return rule;
         }),
       };
-    });
+    }, !['name'].includes(ruleKey));
   },
 
   insertRule: (rule: Rule) => {
+    // 新建时，默认使用
     storage.set(state => {
+      const lastActiveRuleId = state.activeRuleId;
+
       return {
         ...state,
-        rules: [...state.rules, rule],
+        activeRuleId: rule.id,
+        rules: [...state.rules, rule].map(r => ({ ...r, enabled: r.id === rule.id })),
+        lastActiveRuleId,
       };
     });
   },
 
   deleteRule: (ruleId: number) => {
     storage.set(state => {
+      const rules = state.rules.filter(rule => rule.id !== ruleId);
+      // 全删光了, 新增一个
+      if (rules.length === 0) {
+        rules.push(initiatedRule);
+      }
+      const lastActiveRuleId = state.activeRuleId;
+
+      let activeRuleId = lastActiveRuleId;
+      // 如果删除的是正在使用的
+      if (activeRuleId === ruleId) {
+        // 取前一个
+        activeRuleId = lastActiveRuleId - 1 > 0 ? lastActiveRuleId - 1 : 1;
+      }
+
       return {
         ...state,
-        rules: state.rules.filter(rule => rule.id !== ruleId),
+        activeRuleId,
+        lastActiveRuleId,
+        rules: rules.map(r => ({ ...r, enabled: r.id === activeRuleId })),
       };
     });
   },
   setActiveRuleId: (ruleId: number) => {
     storage.set(state => {
+      const lastActiveRuleId = state.activeRuleId;
       return {
         ...state,
         activeRuleId: ruleId,
+        lastActiveRuleId,
+        rules: state.rules.map(r => ({ ...r, enabled: r.id === ruleId })),
       };
     });
   },

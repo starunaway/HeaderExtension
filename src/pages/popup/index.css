@@ -47,7 +47,7 @@ body {
   box-shadow: none;
 }
 
-.chakra-select.select:focus-visible {
+.noBoxShadow:focus-visible {
   border: 1px solid #e2e8f0 !important;
   box-shadow: none;
 }

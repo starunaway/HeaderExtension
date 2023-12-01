@@ -11,7 +11,7 @@ const RuleContainer = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('rule');
 
   const activeRule = rules.find(rule => rule.id === activeRuleId);
-
+  console.log('activeRule', activeRule, rules, activeRuleId, typeof activeRuleId);
   const settedRules = getSettedRules(activeRule);
   const settedFilters = getSettedFilters(activeRule);
 
