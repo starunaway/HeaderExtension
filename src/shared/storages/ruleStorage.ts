@@ -141,11 +141,12 @@ const initialRuleId = 1;
 export const initiatedRule: Rule = {
   id: initialRuleId,
   enabled: true,
-  name: `New Rule ${initialRuleId}`,
+  name: `New Rule`,
   requestHeaders: [
     {
       name: '',
       value: '',
+      enabled: true,
     },
   ],
 };
@@ -206,18 +207,28 @@ const ruleStorage: RuleStorage = {
 
   deleteRule: (ruleId: number) => {
     storage.set(state => {
-      const rules = state.rules.filter(rule => rule.id !== ruleId);
+      let findIndex;
+      const rules = state.rules.filter((rule, index) => {
+        if (rule.id === ruleId) {
+          findIndex = index;
+        }
+        return rule.id !== ruleId;
+      });
       // 全删光了, 新增一个
       if (rules.length === 0) {
-        rules.push(initiatedRule);
+        rules.push({ ...initiatedRule, id: 1 });
       }
       const lastActiveRuleId = state.activeRuleId;
 
       let activeRuleId = lastActiveRuleId;
       // 如果删除的是正在使用的
       if (activeRuleId === ruleId) {
-        // 取前一个
-        activeRuleId = lastActiveRuleId - 1 > 0 ? lastActiveRuleId - 1 : 1;
+        let usedIndex = findIndex;
+        while (!rules[usedIndex]) {
+          usedIndex--;
+        }
+
+        activeRuleId = rules[usedIndex].id;
       }
 
       return {
@@ -242,7 +253,7 @@ const ruleStorage: RuleStorage = {
 };
 
 const updateRule = () => {
-  const { activeRuleId, rules, ...others } = ruleStorage.getSnapshot();
+  const { activeRuleId, rules, lastActiveRuleId, ...others } = ruleStorage.getSnapshot();
   const activeRule = rules.find(r => r.id === activeRuleId);
   chrome.runtime.sendMessage({
     action: 'setHeader',
@@ -250,6 +261,7 @@ const updateRule = () => {
       ...others,
       activeRule,
       activeRuleId,
+      lastActiveRuleId,
     },
   });
 };

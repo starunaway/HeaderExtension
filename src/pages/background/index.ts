@@ -1,6 +1,5 @@
 import { Menus, RuleFieldMap } from '@/constants';
 import { Rule } from '@/shared/storages/ruleStorage';
-import { genRuleId } from '@/utils';
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
 import 'webextension-polyfill';
 
@@ -8,43 +7,31 @@ reloadOnUpdate('pages/background');
 
 let EnabledRulesets = [];
 
-chrome.declarativeNetRequest.getEnabledRulesets().then(rulesets => {
+chrome.declarativeNetRequest.getDynamicRules().then(rulesets => {
   EnabledRulesets = rulesets;
 });
 
+// todo 后续区分是更新 header 还是 Filter
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === 'setHeader') {
-    const { activeRuleId, enabled, activeRule } = message.data as {
+    const { activeRuleId, enabled, activeRule, lastActiveRuleId } = message.data as {
       activeRuleId: number;
+      lastActiveRuleId: number;
       enabled: boolean;
       activeRule: Rule;
     };
+    console.log(' message.data', message.data);
+
+    const cur = await chrome.declarativeNetRequest.getDynamicRules();
+    console.log('cur rules', cur);
 
     // 禁用该规则
     if (enabled === false) {
       chrome.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: [activeRuleId],
+        removeRuleIds: Array.from(new Set([activeRuleId, lastActiveRuleId])),
       });
-      // 没有已启用的规则，不需要操作
-      // if (EnabledRulesets.length === 0) {
-      //   return;
-      // } else {
-      //   //  需要根据每个子项创建规则
-      //   // 不需要，可以通用
-      //   // const ruleIds = Menus.reduce((result, m) => {
-      //   //   if (activeRule[m.value]) {
-      //   //     const ruleId = genRuleId(activeRuleId, m.value);
-      //   //     result.push(ruleId);
-      //   //   }
-      //   //   return result;
-      //   // }, [] as number[]);
-
-      //   chrome.declarativeNetRequest.updateDynamicRules({
-      //     removeRuleIds: [activeRuleId],
-      //   });
-      // }
     } else {
-      console.log(EnabledRulesets, activeRuleId);
+      console.log('activeRuleId', activeRuleId);
       // 启用该规则
       // todo 要把之前的规则移出，这里判断了值是否存在才计算 id，可能会遗漏
       // 需要根据每个子项创建规则
@@ -76,11 +63,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         } as chrome.declarativeNetRequest.RuleAction,
       );
 
+      console.log(action);
+
       const condition: chrome.declarativeNetRequest.RuleCondition = {};
 
       if (action.requestHeaders.length) {
         chrome.declarativeNetRequest.updateDynamicRules({
-          removeRuleIds: [activeRuleId],
+          removeRuleIds: Array.from(new Set([activeRuleId, lastActiveRuleId])),
           addRules: [
             {
               id: activeRuleId,
@@ -91,7 +80,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         });
       } else {
         chrome.declarativeNetRequest.updateDynamicRules({
-          removeRuleIds: [activeRuleId],
+          removeRuleIds: Array.from(new Set([activeRuleId, lastActiveRuleId])),
         });
       }
     }
@@ -99,11 +88,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 });
 
 console.log('background loaded');
-// chrome.storage.local.clear(function () {
-//   var error = chrome.runtime.lastError;
-//   if (error) {
-//     console.error(error);
-//   } else {
-//     console.log('Storage cleared successfully.');
-//   }
-// });
+chrome.storage.local.clear(function () {
+  var error = chrome.runtime.lastError;
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('Storage cleared successfully.');
+  }
+});

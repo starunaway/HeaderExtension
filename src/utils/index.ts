@@ -25,7 +25,19 @@ export const getRuleByKey = (key: RuleValueKey) => {
 
 export const genEmptyRule = (key: RuleValueKey) => {};
 
-export const genRuleId = (id: number, key: RuleValueKey) => {
-  const curId = MenuKeys.findIndex(m => m === key);
-  return id * 10 + curId;
+export const genRuleId = rules => {
+  const last = rules[rules.length - 1];
+  if (last.id === rules.length) {
+    return rules.length + 1;
+  }
+
+  let nextId = 1;
+  for (const rule of rules) {
+    if (rule.id === nextId) {
+      nextId++;
+    } else if (rule.id > nextId) {
+      return nextId;
+    }
+  }
+  return nextId;
 };

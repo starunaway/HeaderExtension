@@ -24,6 +24,7 @@ const RuleValue = (props: IProps) => {
               placeholder={field}></Input>
           );
         }
+        // todo 其他字段。比如 redirecturl，需要再看时 input 还是 select
         return null;
       })}
 

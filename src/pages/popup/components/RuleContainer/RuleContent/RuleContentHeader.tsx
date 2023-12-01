@@ -19,18 +19,18 @@ interface HeaderProps extends IBaseRuleProps {
 
 const RuleContentHeader = (props: HeaderProps) => {
   const {
-    ruleInfo: { id, rules, value: ruleKey, showComment, name, enabled },
+    ruleInfo: { id, rules, value: ruleKey, showComment, name },
     show,
     onShowChange,
   } = props;
 
+  const ruleEnabled = rules.some(r => r.enabled);
+
   const handleRuleGrpupEnable = () => {
-    const newRuleValue = rules.map(r => ({ ...r, enabled: !enabled }));
+    const newRuleValue = rules.map(r => ({ ...r, enabled: !ruleEnabled }));
 
     // 每个子项都要更新状态
     ruleStorage.updateRule(id, ruleKey, newRuleValue);
-    // Group 整体更新状态
-    ruleStorage.updateRule(id, 'enabled', !enabled);
   };
 
   const handleAddRuleToGroup = () => {
@@ -55,7 +55,7 @@ const RuleContentHeader = (props: HeaderProps) => {
   return (
     <div className="flex  items-center mb-8 justify-between">
       <div className="flex items-center">
-        <Switch isChecked={enabled} mr={2} onChange={handleRuleGrpupEnable}></Switch>
+        <Switch isChecked={ruleEnabled} mr={2} onChange={handleRuleGrpupEnable}></Switch>
         <h4 className="text-16 mr-4">{name}</h4>
 
         {show ? (

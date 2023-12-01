@@ -4,9 +4,10 @@ import ruleStorage, { initiatedRule } from '@/shared/storages/ruleStorage';
 import { Input, Select, Tooltip } from '@chakra-ui/react';
 import { AddIcon, CopyIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
+import { genRuleId } from '@/utils';
 
 const MenuHeader = () => {
-  const { rules, activeRuleId } = useStorage(ruleStorage);
+  const { rules, activeRuleId, lastActiveRuleId } = useStorage(ruleStorage);
 
   const handleSelect = e => {
     console.log(e, e.target.value);
@@ -17,7 +18,7 @@ const MenuHeader = () => {
 
   const [editable, setEditable] = useState(false);
 
-  console.log(rules);
+  console.log(rules, activeRuleId, lastActiveRuleId);
 
   const handleEditRule = () => {
     setEditable(true);
@@ -30,17 +31,18 @@ const MenuHeader = () => {
 
   const handleAddRule = () => {
     const newRule = { ...initiatedRule };
-    newRule.id = rules.length + 1;
-    newRule.name = `New Rule ${newRule.id}`;
+    newRule.id = genRuleId(rules);
+    newRule.name = `New Rule ${rules.length + 1}`;
     console.log(' newRule.id ', newRule.id, typeof newRule.id);
     ruleStorage.insertRule(newRule);
   };
   const handleDeleteRule = () => {
+    console.log('handleDeleteRule', activeRuleId);
     ruleStorage.deleteRule(activeRuleId);
   };
   const handleCopyRule = () => {
     const newRule = { ...activeRule };
-    newRule.id = rules.length + 1;
+    newRule.id = genRuleId(rules);
     newRule.name = `Copy of ${newRule.name}`;
     ruleStorage.insertRule(newRule);
   };
