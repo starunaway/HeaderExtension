@@ -2,7 +2,7 @@
   "name": "header-modifyer",
   "private": true,
   "version": "0.0.1",
-  "description": "chrome extension for modify request/response header",
+  "description": " Modify request/response header,can setup with condition ",
   "license": "MIT",
   "repository": {
     "type": "git",
